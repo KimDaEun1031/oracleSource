@@ -70,6 +70,33 @@ SELECT * FROM emp WHERE  deptno=30 OR job='clerk';
 SELECT * FROM emp WHERE  deptno=20 OR job='salesman';
 
 
+-- ==========================연산자 =========================
+-- 산술 :sal*12 한 금액이 36000인 데이터 조회
+SELECT * FROM emp WHERE sal*12 = 36000; 
+
+-- 관계 : =, <, >, >=,<=
+SELECT * FROM emp WHERE sal>3000; 
+SELECT * FROM emp WHERE sal>=3000;
+
+-- F보다 뒤에 있는 이름들 
+SELECT * FROM emp WHERE ename >= 'F';
+
+-- 논리연산자 : AND OR 
+
+-- 급여가 2500이상이고 직업이 ANALYST인 사원 정보 조회
+SELECT * FROM emp WHERE sal>=2500 AND job='ANALYST';
+
+-- 직무가 MANAGER, SALESMAN,CLERK인 사원 정보 조회
+SELECT * FROM emp WHERE job='MANAGER' OR job='SALESMAN' OR job='CLERK'; 
+-- job='MANAGER' OR job='SALESMAN' OR job='CLERK' - 다르게도 가능
+
+-- 등가 연산자 : 양쪽 항목이 같은지 검사 
+
+-- sal이 3000이 아닌 사원정보 출력
+SELECT * FROM emp WHERE sal != 3000;
+SELECT * FROM emp WHERE sal <> 3000;
+SELECT * FROM emp WHERE sal ^= 3000;
+
 
 
 
