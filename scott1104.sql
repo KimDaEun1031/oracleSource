@@ -97,9 +97,17 @@ SELECT * FROM emp WHERE sal != 3000;
 SELECT * FROM emp WHERE sal <> 3000;
 SELECT * FROM emp WHERE sal ^= 3000;
 
+-- in 연산자
 
+-- 위에 OR 쓴거 
+SELECT * FROM emp WHERE job IN ('CLERK','MANAGER','SALESMAN'); 
 
+SELECT * FROM emp WHERE job!='MANAGER' AND job!='SALESMAN' AND job!='CLERK'; 
+-- => 바꾸기 위와 아래 둘다 같은 거임 (아닌거)
+SELECT * FROM emp WHERE job NOT IN ('CLERK','MANAGER','SALESMAN'); 
 
+--IN 을 사용해서 부서번호가 10,20번인 사원정보 조회
+SELECT * FROM emp WHERE deptno IN (10,20); 
 
 
 
