@@ -110,6 +110,96 @@ SELECT * FROM emp WHERE job NOT IN ('CLERK','MANAGER','SALESMAN');
 SELECT * FROM emp WHERE deptno IN (10,20); 
 
 
+-- between A and b
+
+-- 급여가 2000이상 3000이하인 사원정보 조회
+SELECT * FROM emp WHERE sal>=2000 AND sal<=3000;
+SELECT * FROM emp WHERE sal BETWEEN 2000 AND 3000;
+
+-- 급여가 2000 이하 3000 이하가 아닌 사원 정보 조회
+SELECT * FROM emp WHERE sal NOT BETWEEN 2000 AND 3000;
+
+-- like : 문자열 검색을 할 때 사용(s로 시작하는 ~~ / h로 끝나는 ~~ /가운데에 t가 있다면~~)
+-- %가 뒤에 붙으면 ~로 시작하는 %가 글자 사이에(%s%)이런식으로 붙으면 가운데에 ~이 있는
+-- %가 앞에 붙으면 ~로 끝나는 것을 의미 /  _(언더바)를 쓰면 하나당 한자리
+
+-- 사원 이름이 s로 시작하는 모든 사원정보 출력
+SELECT * FROM emp WHERE ename LIKE 'S%';
+
+-- 사원 이름이 두번째 글자 L인 사원만 조회
+SELECT * FROM emp WHERE ename LIKE '_L%'
+
+-- 사원 이름에 AM이 포함되어 있는 사원만 조회
+SELECT * FROM emp WHERE ename LIKE '%AM%'
+-- 사원 이름에 AM이 포함되어 있지 않은 사원만 조회
+SELECT * FROM emp WHERE ename NOT LIKE '%AM%'
+
+
+-- IS NULL
+-- SELECT * FROM emp WHERE comm = null; 안됨
+SELECT * FROM emp WHERE comm IS null;
+
+-- MGR이 NULL 인 사원정보 조회
+SELECT * FROM emp WHERE mgr IS null;
+-- MGR이 NULL 아닌 사원정보 조회
+SELECT * FROM emp WHERE mgr IS NOT null;
+
+-- 집합 연산자 : 합집합(UNION), 교집합(INTERSECT) , 차집합(MINUS)
+
+-- DEPTNO가 10인 테이블과 DEPTNO가 20인 결과를 구해서 합해서 조회
+SELECT empno, ename, sal, deptno FROM emp WHERE deptno =10
+UNION
+SELECT empno, ename, sal, deptno FROM emp WHERE deptno =20;
+
+SELECT empno, ename, sal, deptno FROM emp WHERE deptno =10
+UNION ALL
+SELECT empno, ename, sal, deptno FROM emp WHERE deptno =10;
+-- 합집합 때 값이 같다면 중복은 제거 후 결과 출력 : 이 때 ALL을 붙이면 다 나옴
+
+-- 부서번호가 10이 아닌 사원들의 정보 조회
+SELECT * FROM emp 
+MINUS 
+SELECT * FROM emp WHERE deptno=10;
+
+-- 부서번호가 10인 사원 정보를 조회
+SELECT * FROM emp 
+INTERSECT
+SELECT * FROM emp WHERE deptno=10;
+
+-- 20번 30번 부서에 근부하고 있는 사원 중 SAL이 2000초과인 사원을 다음 두가지
+-- 방식의 SELECT 문을 사용하여 사원번호 이름 급여 부서번호를 출력하는  SQL문 작성
+
+-- 집합 연산자 사용 안하는 방식
+SELECT empno, ename, sal, deptno 
+FROM emp 
+WHERE sal>2000 AND deptno IN (20,30);
+
+-- 집합 연산자를 사용하는 방식
+SELECT empno, ename, sal, deptno FROM emp WHERE sal>2000 
+INTERSECT
+SELECT empno, ename, sal, deptno FROM emp WHERE deptno IN (20,30);
+
+-- 이런식으로도 가능
+SELECT empno, ename, sal, deptno 
+FROM emp 
+WHERE sal>2000 
+MINUS
+SELECT empno, ename, sal, deptno 
+FROM emp 
+WHERE deptno=10;
+
+
+SELECT empno, ename, sal, deptno 
+FROM emp 
+WHERE sal>2000 AND deptno=20
+UNION
+SELECT empno, ename, sal, deptno 
+FROM emp 
+WHERE sal>2000 AND deptno=30;
+
+-- 오라클 함수  
+
+
 
 
 
