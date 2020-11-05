@@ -198,10 +198,38 @@ FROM emp
 WHERE sal>2000 AND deptno=30;
 
 -- 오라클 함수  
+-- 1. 문자 함수 : upper, lower , initcap, LENGTH, LENGTHB
+-- upper : 대문자 변경 / lower : 소문자 변경 / initcap : 처음만 대문자
+
+-- ENAME을 UPPER와 LOWER, INITCAP으로 변환하여 조회
+SELECT ename, UPPER(ename), LOWER(ename), INITCAP(ename) 
+FROM emp;
+
+-- LENGTH : 문자열 길이 / LENGTHB : 문자열 길이(b = 바이트크기)
+SELECT LENGTH('한글'), LENGTHB('한글') FROM dual;
+--dual 테이블  : sys가 소유하고 있는 테이블로 임시연산과 함수의 결과값을 확인하는 용도
+
+-- 직책이 6글자 이상인 사원들의 정보 추출
+SELECT * FROM emp WHERE LENGTH(job) >= 6;
+
+-- 문자열 함수 : substr(문자열 데이터, 시작위치, 추출길이)
+SELECT job, substr(job,1,2), substr(job,3,2), substr(job,5) FROM emp;
+
+--   -LENGTH(job) = -5 출력할 땐 마이너스로도 가능하다
+-- 두번째엔 -5부터시작 2번째 까지 니까 -5,-4 2개 출력해서 cl이 나온거
+
+SELECT job, substr(job, -LENGTH(job)), substr(job, -LENGTH(job),2), substr(job,-3)
+FROM emp;
+
+-- 문자열 함수 : INSTR(특정 문자 위치 찾기)
+SELECT INSTR('HELLO, ORACLE!', 'L') AS INSTR_1,
+       INSTR('HELLO, ORACLE!', 'L',5) AS INSTR_2,
+       INSTR('HELLO, ORACLE!', 'L',2,2) AS INSTR_3
+FROM dual;
+
+-- 문자열 함수 : REPLACE(문자 찾아서 바꾸기)
+SELECT 
 
 
-
-
-
-
+FROM 
 
