@@ -228,8 +228,163 @@ SELECT INSTR('HELLO, ORACLE!', 'L') AS INSTR_1,
 FROM dual;
 
 -- 문자열 함수 : REPLACE(문자 찾아서 바꾸기)
-SELECT 
+SELECT REPLACE('이것이 oracle이다','이것이','This is')
+FROM dual;
+
+SELECT '010-1234-1234' AS REPLACE_BEFFORE, 
+       REPLACE('010-1234-1234', '-', ' ') AS REPLACE_1,
+       REPLACE('010-1234-1234', '-') AS REPLACE_2
+FROM dual;
+
+-- 문자열 함수 : commcat(문자열 연결)
+SELECT CONCAT(empno,ename),  CONCAT(empno,CONCAT(':',ename))
+FROM emp
+WHERE ename='SCOTT';
+
+-- || 연결의 의미로 사용
+
+SELECT empno || ename, empno || ':' || ename
+FROM emp
+WHERE ename='SCOTT';
+
+-- 문자열 함수 : TRIM(공백제거), LTRIM(왼쪽 공백 제거), RTRIM(오른쪽 공백 제거)
+SELECT '    이것이     ', TRIM('    이것이     ')
+FROM dual;
+
+-- 문자열 함수 : REVERSE(거꾸로)
+SELECT REVERSE('Oracle') FROM dual;
 
 
-FROM 
+-- 2. 숫자함수 : ROUND, TRUNC, CEIL, FLOOR, MOD
+-- ROUND : 반올림 / TRUNC : 버림 / CEIL : 입력된 숫자와 가까운 큰 정수
+-- FLOOR : 입력된 숫자와 가까운 작은 정수 / MOD : 나머지
+
+SELECT ROUND(1234.5678) AS ROUND,
+       ROUND(1234.5678,0) AS ROUND_1,
+       ROUND(1234.5678,1) AS ROUND_2,
+       ROUND(1234.5678,-1) AS ROUND_MINUS,
+       ROUND(1234.5678,-2) AS ROUND_MINUS2
+FROM dual;
+
+
+SELECT TRUNC(1234.5678) AS TRUNC,
+       TRUNC(1234.5678,0) AS TRUNC_1,
+       TRUNC(1234.5678,1) AS TRUNC_1,
+       TRUNC(1234.5678,-1) AS TRUNC_MINUS,
+       TRUNC(1234.5678,-2) AS TRUNC_MINUS2
+FROM dual;
+
+SELECT CEIL(3.14), FLOOR(3.14), CEIL(-3.14), FLOOR(-3.14)
+FROM dual;
+
+SELECT MOD(15,6), MOD(10,2), MOD(11,2) FROM dual;
+
+-- 날짜 함수 : SYSDATE(가장높은사용률), CURRENT_DATE, CURRENT_TIMESTAMP
+-- sysdate를 많이 사용하는 이유 : 회원가입 업무를 만약에 맡았다면 다른사람이 가입을 했을 때
+-- 가입한 그 날짜가 떠야돼기에
+
+SELECT SYSDATE, CURRENT_DATE, CURRENT_TIMESTAMP FROM dual;
+
+-- 날짜데이터는 연산이 가능함 : 날짜 데이터 +1 /-1, 날짜데이터 - 날짜데이터 
+-- 날짜 + 날짜 는 안됨
+
+SELECT SYSDATE AS NOW, SYSDATE-1 AS YESTERDAY, SYSDATE+1 AS TOMORROW
+FROM DUAL;
+
+-- 날짜 함수 : ADD_MONTHS
+SELECT SYSDATE, ADD_MONTHS(SYSDATE,4) FROM DUAL;
+
+-- 입사 10주년이 되는 사원들 조회hr
+
+SELECT empno, ename, hiredate, ADD_MONTHS(hiredate,120) FROM emp;
+
+-- 입사 38년 미만인 사원 조회
+SELECT * FROM emp WHERE ADD_MONTHS(hiredate,456) > SYSDATE;
+
+-- 날짜함수 : MONTHS_BETWEEN(두 날짜 사이의 차이)
+SELECT * FROM emp WHERE MONTHS_BETWEEN(SYSDATE, HIREDATE) < 456;
+
+SELECT empno, ename, hiredate, SYSDATE,MONTHS_BETWEEN(hiredate,SYSDATE) AS MONTH1,
+MONTHS_BETWEEN(SYSDATE,hiredate) AS MONTH2, TRUNC(MONTHS_BETWEEN(SYSDATE,hiredate))
+FROM emp;
+
+--날짜 함수 : NEXT_DAY (오늘을 기준으로 가장 가까운 날) 
+        --   LAST_DAY (위에 날을 기준으로 마지막 날)
+SELECT SYSDATE,NEXT_DAY(SYSDATE,'월요일'),LAST_DAY(SYSDATE)
+FROM dual;
+
+-- 형변환 함수 :  TO_CHAR(날짜,숫자를 문자로)
+--              TO_NUMBER(문자를 숫자로)
+--              TO_DATE(문자를 날짜로 변환)
+-- 앞에 BAR가 붙으면 가변형 문자라는 뜻 EX) TO_BARCHAR..
+
+SELECT to_char(SYSDATE,'YYYY/MM/DD') AS 현재날짜 FROM DUAL;
+SELECT to_char(SYSDATE,'MM') AS 현재날짜 FROM DUAL;
+SELECT to_char(SYSDATE,'MON') AS 현재날짜 FROM DUAL; --월이라고 붙음
+SELECT to_char(SYSDATE,'DD') AS 현재날짜 FROM DUAL;
+SELECT to_char(SYSDATE,'DAY') AS 현재날짜 FROM DUAL;
+SELECT to_char(SYSDATE,'HH:MI:SS') AS 현재시간 FROM DUAL;
+SELECT to_char(SYSDATE,'HH12:MI:SS') AS 현재시간 FROM DUAL;
+SELECT to_char(SYSDATE,'HH24:MI:SS') AS 현재시간 FROM DUAL;
+SELECT to_char(SYSDATE,'HH:MI:SS PM') AS 현재시간 FROM DUAL;
+
+-- 오늘 날짜를 년, 월, 일 16:51:45 표현
+SELECT to_char(SYSDATE,'YYYY/MM/DD HH24:MI:SS') AS 현재날짜시간 FROM DUAL;
+
+SELECT TO_NUMBER('1,300,000','999,999,999') - TO_NUMBER('1,300','999,999') FROM dual;
+-- 9,0 (숫자 한 자리를 의미), 9 = 빈자리를 채우지 않는 형태, 0 빈자리를 채우는 형태
+
+SELECT SAL, TO_CHAR(SAL, '$999,999') AS SAL_$,
+       TO_CHAR(SAL, 'L999,999') AS SAL_L,
+        TO_CHAR(SAL, '$999,999.00') AS SAL_1, 
+        TO_CHAR(SAL, '$000,999,999.00') AS SAL_2,
+        TO_CHAR(SAL, '$000999999.99') AS SAL_3,
+        TO_CHAR(SAL, '999,999.00') AS SAL_4
+FROM emp;
+
+SELECT TO_DATE('2020-11-05','YYYY/MM/DD') AS TODATE1,
+       TO_DATE('20201105','YYYY-MM-DD') AS TODATE2 FROM DUAL;
+       
+-- 1981년 6월 1일 이후에 입사한 사원정보 조회
+SELECT * 
+FROM emp 
+WHERE hiredate > TO_DATE('1981-06-01','YYYY/MM/DD');
+
+SELECT TO_DATE('2O19-12-20')-TO_DATE('2019-10-20') FROM emp;
+
+-- 널처리 함수 : NVL / NVL2 
+SELECT empno, ename, sal, comm, sal+comm FROM emp;
+
+SELECT empno, ename, sal, comm, sal+comm, NVL(comm,0), sal+NVL(comm,0)
+FROM emp;
+
+SELECT empno, ename, sal, comm, sal+comm,NVL2(comm,'O','X'), sal+NVL2(comm,sal*12+comm,sal*12) AS annsal
+FROM emp; 
+--NVL2는 널이 아닐 경우도 처리 가능
+
+-- DECODE 함수 AND CASE문
+-- JOB이 매니저인 경우, 세일즈맨인 경우, 어널리스트의 경우 각각의 다른 비율을 적용하고 싶다면?
+
+SELECT empno, ename, job, sal, DECODE(job,
+                                    'MANAGER', SAL*1.1,
+                                    'SALESMAN', SAL*1.05,
+                                    'ANALYST', SAL,
+                                    SAL*1.03) AS UPSAL
+FROM emp;
+
+SELECT empno, ename, job, sal, CASE job
+                                    WHEN  'MANAGER' THEN SAL*1.1
+                                    WHEN  'SALESMAN' THEN SAL*1.05
+                                    WHEN  'ANALYST' THEN SAL
+                                    ELSE   SAL*1.03 
+                               END AS UPSAL
+FROM emp;
+
+-- DECODE문과 CASE문 중 많이 쓰이는 것은... 둘다 잘 안씀 / 코딩을 하니까
+
+SELECT empno,ename,job,sal, CASE
+                                WHEN comm IS NULL THEN '해당사항없음'
+                                WHEN comm=0 THEN '수당없음'
+                                WHEN comm>0 THEN '수당'
+                            END AS COMM_TEXT FROM emp;
 

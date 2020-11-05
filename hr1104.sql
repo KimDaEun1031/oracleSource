@@ -96,5 +96,39 @@ SELECT employee_id, first_name, job_id, commission_pct*salary AS commission_pct
 FROM employees 
 WHERE commission_pct IS NOT null;
 
+-- 문자열 함수 실습 
+-- 1. 퍼스트 네임이 curtis인 사람의 퍼스트 네임 라스트 네임 이메일 폰넘버 잡을 조회
+-- 단 잡의 결과는 소문자로
+SELECT first_name, last_name, email, phone_number, LOWER(job_id) 
+FROM employees
+WHERE first_name = 'Curtis'; 
+
+-- 2. 부서번호가 60 70 80 90인 사람들의 employee, 퍼스트 네임, 고용일자, 잡을 조회
+-- 단 잡은 it_prog인 사원의 경우 프로그래머로 변경하여 출력
+SELECT employee_id ,first_name, hire_date , REPLACE(job_id,'IT_PROG', '프로그래머')
+FROM employees
+WHERE department_id IN(60,70,80,90); 
+
+
+--3. 잡이 ad_pres pu_clerk인 사원들의 employee, 퍼스트 네임 라스트 네임 
+-- department 잡을 조회하시오 단 사원명은 퍼스트와 라스트를 이어서 출력
+SELECT employee_id ,CONCAT(first_name,CONCAT(' ' ,last_name)), department_id , job_id
+FROM employees
+WHERE job_id IN ('AD_PRES','PU_CLERK'); 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
