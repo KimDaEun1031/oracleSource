@@ -148,6 +148,43 @@ SELECT last_name, salary, DECODE(TRUNC(salary/2000,0),
 FROM employees WHERE deparment_id=80;
 
 
+--  ======= 다중행 함수 실습 =====
+-- 회사 내의 최대 연봉 및 최소 연봉 차이를 조회
+SELECT MAX(salary) - MIN(salary) FROM employees;
+
+-- ST_CLERK로 근무하는 사원들의 인원 수 조회
+SELECT COUNT(*) FROM employees WHERE job_id='ST_CLERK';
+
+-- 매니저로 근무하는 사월들의 인원 수 조회
+SELECT COUNT(DISTINCT manager_id) FROM employees;
+
+-- ========= GROUP BY 실습 ===========
+SELECT * FROM employees;
+-- 부서별 직원의수를 구하여 부서번호의 오름차순으로 출력
+SELECT department_id ,COUNT(employee_id) 
+FROM employees 
+GROUP BY department_id 
+ORDER BY department_id;  
+-- 부서별 급여의 평균 연봉을 출력하고, 평균 연봉은 정수만 나오게
+-- 부서번호별 오름차순으로 정렬
+SELECT ROUND(AVG(salary),0) 
+FROM employees
+GROUP BY department_id
+ORDER BY department_id;
+
+-- 동일한 직업을 가진 사원 수를 조회
+SELECT job_id, COUNT(employee_id)
+FROM employees
+GROUP BY job_id;
+
+
+
+
+
+
+
+
+
 
 
 
