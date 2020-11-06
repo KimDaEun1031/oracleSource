@@ -117,15 +117,35 @@ FROM employees
 WHERE job_id IN ('AD_PRES','PU_CLERK'); 
 
 
+-- == 함수 실습 ==
 
 
+-- 부서 80의 각 사원에 대해 적용가능한 세율을 표시 (PPT 참고)
+SELECT last_name, salary, CASE 
+                                -- WHEN salary < 2000 THEN 0
+                                -- WHEN (salary < 4000) THEN 0.09 ...
+                                -- ... ELSE 0.45
+                                WHEN salary BETWEEN 0 AND 1999 THEN salary*0
+                                WHEN salary BETWEEN 2000 AND 3999 THEN 0.09
+                                WHEN salary BETWEEN 4000 AND 5999 THEN 0.2
+                                WHEN salary BETWEEN 6000 AND 7999 THEN 0.3
+                                WHEN salary BETWEEN 8000 AND 9999 THEN 0.4
+                                WHEN salary BETWEEN 10000 AND 11999 THEN 0.42
+                                WHEN salary BETWEEN 12000 AND 13999 THEN 0.44
+                                WHEN salary>14000 THEN 0.45                               
+                                END AS TAX_RATE
+FROM employees WHERE deparment_id=80;
 
-
-
-
-
-
-
+SELECT last_name, salary, DECODE(TRUNC(salary/2000,0),
+                         0,0.00,
+                         1,0.09,
+                         2,0.20,
+                         3,0.30,
+                         4,0.40,
+                         5,0.42,
+                         6,0.44,
+                         0.45) AS TAX_RATE
+FROM employees WHERE deparment_id=80;
 
 
 

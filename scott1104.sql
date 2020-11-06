@@ -197,7 +197,8 @@ SELECT empno, ename, sal, deptno
 FROM emp 
 WHERE sal>2000 AND deptno=30;
 
--- 오라클 함수  
+-- =========================== 오라클 함수 ==========================
+
 -- 1. 문자 함수 : upper, lower , initcap, LENGTH, LENGTHB
 -- upper : 대문자 변경 / lower : 소문자 변경 / initcap : 처음만 대문자
 
@@ -249,6 +250,12 @@ WHERE ename='SCOTT';
 
 -- 문자열 함수 : TRIM(공백제거), LTRIM(왼쪽 공백 제거), RTRIM(오른쪽 공백 제거)
 SELECT '    이것이     ', TRIM('    이것이     ')
+FROM dual;
+-- LEADING : 왼쪽에 있는 글자 지우기 / TRAILING : 오른쪽에 있는 글자 지우기
+-- BOTH : 양쪽에 있는 글자 지우기
+SELECT TRIM(LEADING FROM '__ORACLE__') AS TRIM_LEADING,
+       TRIM(TRAILING FROM '__ORACLE__') AS TRIM_TRAILING,
+       TRIM(BOTH FROM '__ORACLE__') AS TRIM_BOTH,
 FROM dual;
 
 -- 문자열 함수 : REVERSE(거꾸로)
@@ -387,4 +394,49 @@ SELECT empno,ename,job,sal, CASE
                                 WHEN comm=0 THEN '수당없음'
                                 WHEN comm>0 THEN '수당'
                             END AS COMM_TEXT FROM emp;
+                            
+-- ========= 함수 실습 ===========                           
+
+-- 사원들의 월 평균 근무 일수는 21.5일이다. 하루 근무 8시간으로 보았을 때 사원들의
+-- 하루 급여(day_pay)와 시급(time_pay)를 계산하여 결과 출력
+-- 단, 하루 급여는 소수점 셋째 자리에서 버리고, 시급은 두번째 소수점에서 반올림
+
+SELECT empno, ename, sal , TRUNC ((sal/21.5),2) AS DAY_PAY, 
+                           ROUND ((sal/21.5/8),1) AS TIME_PAY
+FROM emp;
+
+
+-- 사원들은 입사일을 기준으로 3개월이 지난 후 첫 월요일에 정직원이 된다.
+-- 사원들의 정직원이 되는 날짜(r_job)을 YYYY-MM-DD형식으로 출력
+-- 단 추가수당(COMM)이 없는 사원의 추가 수당은 N/A로 출력
+SELECT empno, ename, hiredate ,NEXT_DAY(ADD_MONTHS(hiredate,3),'월요일') AS r_job,
+      NVL(TO_CHAR(comm),'N/A') AS COMM
+FROM emp;
+
+
+-- 모든 사월을 대상으로 직속 상관의 사원번호를 다음 조건을 기준으로 변환하여 CHG_MGR열에 출력
+-- 사원번호가 존재하지 않을 경우 : 0000 / 앞 두자리가 75일 경우 : 5555 / 76일 경우 : 6666
+-- 77일 경우 : 7777 / 78일 경우 : 8888 / 그외는 그대로 출력
+SELECT SUBSTR(TO_CHAR(mgr),1,2) FROM emp;
+
+SELECT empno, ename, mgr,
+            DECODE(SUBSTR(TO_CHAR(mgr),1,2),
+                'null','0000',
+                '75','5555',
+                '76','6666',
+                '77','7777',
+                '78','8888',
+                TO_CHAR(mgr))
+FROM emp;
+
+SELECT empno, ename, mgr,  CASE
+                                WHEN mgr IS NULL THEN '0000'
+                                WHEN substr(mgr,1,2)=75 THEN '5555'  
+                                WHEN substr(mgr,1,2)=76 THEN '6666'  
+                                WHEN substr(mgr,1,2)=77 THEN '7777'  
+                                WHEN substr(mgr,1,2)=78 THEN '8888'
+                                ELSE TO_CHAR(mgr)
+                            END AS CHG_MGR FROM emp;
+
+
 
