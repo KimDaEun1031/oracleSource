@@ -106,3 +106,4 @@ FROM emp
 GROUP BY deptno, TO_CHAR(hiredate,'yyyy')
 ORDER BY TO_CHAR(hiredate,'yyyy');
 
+

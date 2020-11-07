@@ -177,10 +177,58 @@ SELECT job_id, COUNT(employee_id)
 FROM employees
 GROUP BY job_id;
 
+-- ================= JOIN 실습 ===================
+SELECT * FROM tab;
+SELECT * FROM EMPLOYEES;
+SELECT * FROM locations;
+SELECT * FROM departments;
+SELECT * FROM emp_details_view;
+SELECT * FROM job_history;
 
 
+-- 자신의 담당 매니저의 고용일 보다 빠른 입사자를 찾아 고용일, 라스트네임, MANAGER_ID를 출력
+-- employees self join => 37행
+SELECT E1.hire_date, E1.last_name, E1.hire_date AS 빠른입사자입사일,
+       e1.manager_id, E2.hire_date AS 내매니저입사일
+FROM employees E1 , employees E2 -- e1은 내 매니저보다 입사일이 빠른 입사자 / e2는 내 매니저
+WHERE E1.manager_id = e2.employee_id AND e1.hire_date < e2.hire_date;
 
+-- 도시 이름이 T로 시작하는 지역에 사는 사원들의 사번, 라스트네임,부서번호 조회
+-- e.department_id = d. department_id 후 d.location_id = l.location_id = 2행
+SELECT e.employee_id, e.last_name, e.department_id
+FROM employees E, departments D, locations L
+WHERE e.department_id = d.department_id AND d.location_id = l.location_id AND l.city LIKE 'T%';
+    
 
+-- LOCATION_ID가 1700인 동일한 사원들의 라스트 네임, DEPARTMENT_ID, SALARY 조회 - e,d  18행
+SELECT E.LAST_NAME, E.DEPARTMENT_ID, E.SALARY
+FROM  employees E INNER JOIN departments D
+ON E.DEPARTMENT_ID = D.DEPARTMENT_ID
+WHERE LOCATION_ID = 1700;
+ 
+-- DEPARTMENT_ID, LOCATION_ID, 각 부서별 사원수, 각부서별 평균 연봉 조회 - e,d   11행
+SELECT d.department_id, d.location_id, COUNT(employee_id), ROUND(AVG(salary))
+FROM employees E INNER JOIN departments D
+ON E.DEPARTMENT_ID = D.DEPARTMENT_ID
+GROUP BY  d.department_id, d.location_id;
+
+-- executive 부서에 근무하는 모든 사원들의 department_id,last_name, job_id 조회 - em, d   3행
+SELECT em.department_id, em.last_name, em.job_id
+FROM emp_details_view EM INNER JOIN departments D
+ON em.department_id = D.department_id AND D.department_id = 90;
+
+-- 기존의 직업을 여전히 가지고 있는 사원들의 사번 및 잡 조회 - em , j-h     10행  DISTINCT시 7행
+SELECT  em.employee_id, em.job_id
+FROM emp_details_view EM, job_history JH
+WHERE EM.employee_id(+) = JH.employee_id;
+
+-- /* 각 사원별 소속 부서에서 자신보다 늦게 고용되었으나 보다 많은 연봉을 받는
+-- 사원이 존재하는 모든 사원들의 LAST_NAME 조회
+-- (EMPLOYEES SELF JOIN)*/ 332행? / 중복제거 해도 같네.. / 마지막으로 E1의 라스트네임(중복제거)만 조회하면 63행
+SELECT DISTINCT e1.last_name --e1.department_id, e1.hire_date, e1.salary,
+             --DISTINCT e2.last_name, e2.department_id, e2.hire_date, e2.salary
+FROM employees E1, employees E2 -- e1은 입사일이 늦게 고용된 자 / e2는 나
+WHERE  e1.department_id = e2.department_id AND  e1.hire_date > e2.hire_date AND e1.salary > e2.salary;
 
 
 
