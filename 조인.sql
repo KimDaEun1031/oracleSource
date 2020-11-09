@@ -143,3 +143,12 @@ FROM EMP E1 ,DEPT D1,SALGRADE S,EMP E2
 WHERE E1.DEPTNO(+) = D1.DEPTNO AND E1.SAL BETWEEN S.LOSAL AND S.HISAL(+) AND
      E1.MGR = E2.EMPNO(+)
 ORDER BY E1.DEPTNO;
+
+-- 서브 쿼리 예습
+-- 단일행 쿼리 : 왜 실행결과가 단 하나의 행? 무슨 소린지 모르겠다.. 설명 필요
+SELECT * FROM emp WHERE sal >
+(SELECT sal FROM emp WHERE ename = 'JONES');
+
+SELECT * FROM emp WHERE hiredate >
+(SELECT hiredate FROM emp WHERE ename = 'SCOTT');
+

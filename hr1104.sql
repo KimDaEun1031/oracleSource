@@ -185,6 +185,7 @@ SELECT * FROM departments;
 SELECT * FROM emp_details_view;
 SELECT * FROM job_history;
 
+-- JOIN 된 것들에만 별칭 붙여줘도 상관 없음
 
 -- 자신의 담당 매니저의 고용일 보다 빠른 입사자를 찾아 고용일, 라스트네임, MANAGER_ID를 출력
 -- employees self join => 37행
@@ -206,29 +207,82 @@ FROM  employees E INNER JOIN departments D
 ON E.DEPARTMENT_ID = D.DEPARTMENT_ID
 WHERE LOCATION_ID = 1700;
  
--- DEPARTMENT_ID, LOCATION_ID, 각 부서별 사원수, 각부서별 평균 연봉 조회 - e,d   11행
-SELECT d.department_id, d.location_id, COUNT(employee_id), ROUND(AVG(salary))
+-- DEPARTMENT_NAME, LOCATION_ID, 각 부서별 사원수, 각부서별 평균 연봉 조회 - e,d   11행
+SELECT d.department_name, d.location_id, COUNT(employee_id), ROUND(AVG(salary))
 FROM employees E INNER JOIN departments D
-ON E.DEPARTMENT_ID = D.DEPARTMENT_ID
-GROUP BY  d.department_id, d.location_id;
+ON E.DEPARTMENT_ID = D.DEPARTMENT_ID                           -- 문제를 잘못적었지만 정답
+GROUP BY  d.department_name, d.location_id;
 
 -- executive 부서에 근무하는 모든 사원들의 department_id,last_name, job_id 조회 - em, d   3행
 SELECT em.department_id, em.last_name, em.job_id
-FROM emp_details_view EM INNER JOIN departments D
+FROM emp_details_view EM INNER JOIN departments D                             -- 문제를 잘못적었지만 정답
 ON em.department_id = D.department_id AND D.department_id = 90;
 
--- 기존의 직업을 여전히 가지고 있는 사원들의 사번 및 잡 조회 - em , j-h     10행  DISTINCT시 7행
+SELECT d.department_id, last_name, job_id
+FROM employees E INNER JOIN departments D    -- 쌤이 한거
+ON e.department_id = D.department_id AND D.department_name = 'Executive';
+
+-- 기존의 직업을 여전히 가지고 있는 사원들의 사번 및 잡 조회 - em , j-h     10행  DISTINCT시 7행  답은 2행
 SELECT  em.employee_id, em.job_id
-FROM emp_details_view EM, job_history JH
+FROM emp_details_view EM, job_history JH    -- 문제 잘못 적음  틀림
 WHERE EM.employee_id(+) = JH.employee_id;
+
+SELECT  e.employee_id, e.job_id
+FROM  employees E, job_history JH  
+WHERE E.employee_id = JH.employee_id AND e.job_id = jh.job_id;
 
 -- /* 각 사원별 소속 부서에서 자신보다 늦게 고용되었으나 보다 많은 연봉을 받는
 -- 사원이 존재하는 모든 사원들의 LAST_NAME 조회
--- (EMPLOYEES SELF JOIN)*/ 332행? / 중복제거 해도 같네.. / 마지막으로 E1의 라스트네임(중복제거)만 조회하면 63행
-SELECT DISTINCT e1.last_name --e1.department_id, e1.hire_date, e1.salary,
+-- (EMPLOYEES SELF JOIN)*/ 332행? / 중복제거 해도 같네.. / 마지막으로 E1의 라스트네임(중복제거)만 조회하면 63행 / 답 : 332 행인가보오..
+SELECT DISTICT e1.last_name ,e1.department_id --, e1.hire_date, e1.salary,
              --DISTINCT e2.last_name, e2.department_id, e2.hire_date, e2.salary
 FROM employees E1, employees E2 -- e1은 입사일이 늦게 고용된 자 / e2는 나
 WHERE  e1.department_id = e2.department_id AND  e1.hire_date > e2.hire_date AND e1.salary > e2.salary;
+
+SELECT e1.department_id, e1.first_name || ' ' || e1.last_name AS NAME
+FROM employees E1, employees E2 -- e1은 입사일이 늦게 고용된 자 / e2는 나
+WHERE  e1.department_id = e2.department_id AND  e1.hire_date > e2.hire_date AND e1.salary > e2.salary;
+
+
+-- ======= 서브 쿼리 실습 ======
+
+-- 회사 전체 평균 연봉보다 더 많이 받는 사원들의 LAST_NAME, SALARY 조회 51행
+SELECT last_name, salary
+FROM employees
+WHERE salary > (SELECT AVG(salary)
+             FROM employees);
+-- LAST_NAME에 U가 포함되는 사원들과 동일 부서에 근무하는 사원들의 EMPLOYEE_ID, LAST_NAME 조회  6행
+SELECT last_name, EMPLOYEE_id
+FROM employees 
+WHERE department_id IN (SELECT DISTINCT department_id
+                               FROM employees
+                               WHERE last_name LIKE '%U%');
+
+-- NOT EXISTS 연산자를 사용하여 매니저가 아닌 사원이름을 조회  89행
+SELECT first_name || ' ' || last_name AS NAME
+FROM employees e1
+WHERE NOT EXISTS (SELECT DISTINCT manager_id
+                  FROM employees e2 WHERE e1.employee_id = e2.manager_id);
+-- NOT IN을 사용하여 조회
+SELECT first_name || ' ' || last_name AS NAME
+FROM employees e1
+WHERE e1.employee_id NOT IN (SELECT DISTINCT manager_id
+                  FROM employees e2 WHERE e1.employee_id = e2.manager_id);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
