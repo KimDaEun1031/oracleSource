@@ -270,8 +270,24 @@ WHERE e1.employee_id NOT IN (SELECT DISTINCT manager_id
                   FROM employees e2 WHERE e1.employee_id = e2.manager_id);
 
 
+-- 인덱스 확인
+CREATE TABLE INDEXTBLE AS -- 선생님은 indextbl
+SELECT DISTINCT first_name, last_name, hire_date FROM employees;
 
+SELECT * FROM indextble WHERE first_name='Jack'; -- 무조건 대소문자 구분
 
+-- 데이터베이스에서 검색의 향상 때문에 index 사용
+-- 인덱스 사용 여부에 따라 테이블 검색 방식을 Table Full Scan, Index Scan으로 구분
+-- FULL = 처음부터 끝까지 전부 뒤져 찾아냈다는 뜻
+
+-- 인덱스 생성
+CREATE INDEX idx_indextble_firstname ON indextble(first_name);
+
+-- 인덱스를 잡고 셀렉트문 걸고 다시 계획 설명 키면 옵션 부분이 달라짐 
+-- full => range scan
+
+-- 인덱스 삭제
+DROP INDEX idx_indextble_firstname;
 
 
 
