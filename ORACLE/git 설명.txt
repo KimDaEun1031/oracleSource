@@ -1,0 +1,110 @@
+로컬 저장소 생성 / 초기화 :  git init
+파일 생성
+staged 상태 만들기 : git add 생성된 파일명
+전부다 : git add .
+
+로컬저장소 저장 : git commit -m "메세지"
+메세지를 적지 않았을 때 i를 누르고 맨 위 노란색 글씨로 메세지를 적은 뒤
+esc를 누른 후 쉬프트와 콜론을 동시에 누른 뒤 wq를 치면 나가진다.
+wq는 저장후 나가기 q는 그냥 나가기
+한글도 가능하지만 되도록 영어로
+
+git 상태 : git status
+git 기록(이력/commit 기준) : git log를 했을 때 콜론이 띄워지면 q 누르면 나가짐
+git log --graph : 그래프
+git log --oneline --decorate : 간략
+
+modified 상태(수정되어서 아직 staged화 되지 않은) 파일만 가능
+add + commit 명령어 :   git commit -a -m "메세지"
+
+stated 상태/로컬저장소 => untracked(: 추적하지 않음) 상태변경 
+
+git rm --cache (파일명) : rm(remove의 약자) = 얘는 파일을 추적하지 않는 상태로 변경
+rm하면 무조건 나오는 deleted: (파일명) 은 commit해주기
+log를 치더라도 기록을 남아있음
+
+git rm (파일명) : cache제거 했을 때   = 조심
+파일을 아예 제거해버림(Delete기능과 같음)
+
+C:\Users\kimde>cd ../../
+. 점 하나당 폴더를 올라감
+../은 kimde날아감 ../. 은 users날아감 ../../ 은 c만 남음
+C:\>cd C:\GitTest 후에 이렇게 적으면 댐
+
+예)
+hello자바파일을 컴파일을 했다(javac Hello.java)
+class 파일이 생성되었지만 나는 이 class 파일을 관리하고 싶지 않을 때
+untracked에도 안뜨게 할 수 있다.
+=> ignore 작업 : .gitignore(확장자명) 파일작성(단 파일명이 없음)
+원래 윈도우는 파일명 없이 확장자만 입력하면 안되는데 난 됐음..?
+파일 안에 작성할 때
+# 확장자가 .class 파일 무시   => 주석
+*.class  
+적은 후 git status를 쓰면 class파일 대신에 .gitignore가 생김
+
+ignore :   - 가장 처음에 작성하는 것이 좋다
+현재 폴더에 관리해야할 파일과 아닌 파일이 섞여서 
+존재하기 때문에 ignore 파일 작성을 통해
+처음부터 untracked에 나오지 않도록 만들 수 있다.
+
+=====================================
+전부 소문자 사용
+
+branch : master 외에 다른 작업을 할 때 사용
+약간 상속 개념 생각하면 될듯 가지치기
+메인에서 작업하던것을 다른 브런치에 복제해 옮김
+새로운 실험을 하고 싶을 때 사용하면 좋음
+성공하면 메인과 합치고 아니면 그 브런치는 버리면 된다
+
+브런치 생성 : git branch (브런치명) : branch hotfix
+
+git branch : 브런치 명들
+새로운 브런치를 생성하지 않았을 경우 master만 있음(별표로 내가 어디에 속해 있는지 알 수 있음)
+
+브런치 이동 : git checkout (브런치명) : 다른 브런치에서 체크아웃한 브런치로 옮김(나갈때도 똑같음)
+예) 난 master에 있음 git checkout hotfix를 적으면 난 hotfix에 가있음
+
+ls : 이동한 브런치에 메인 브런치에 있던 파일들을 전부 복제함(그런 논리)
+
+vim (내용를 바꿀 파일명) : 메세지를 적지 않았을 때와 같이 i를 사용해서 내용을 다시
+바꾸고 똑같이 나가면 됨 
+
+git branch -d (삭제할 브런치명) : 그 브런치 삭제
+
+Merge : 병합
+다른 브랜치에서 작업한 것을 master로 병합
+git merge 병합할 브런치명 (서로 다른 HEAD를 가졌을 때)
+
+conflict : 충돌
+
+원격저장소 연결(github) => 팀작업
+
+(무조건 하는 작업)javasourse => 로컬저장소 : 연결한게 아래
+                                    => 원격은 선택으로
+
+이클립스 워크스페이스 경로 복사(C:\eclipse) 난여기
+이클립스 연동시 .gitignore를 사용하는데 
+ignore.io 사이트 이용할 때 java / eclipse / code-java 태그를 입력하면 쉽게
+작성 가능
+
+원격저장소에 저장소 폴더 생성
+git remote add origin https://github.com/KimDaEun1031/javasourse.git
+
+git remote -v
+origin 내용 확인
+
+git push -u origin master를 하면  github에 파일을 올릴수 있음
+
+github에 올려던 내용을 다시 가져오는 방법
+cd c:/로 간 후 내용을 옮길 폴더를 지정한다.
+만약에 c/test/ 라고 친다면 git init를 한 후 github코드를 복사한 후 
+git pull 복사한 코드를 치면 바로 생김
+
+
+이클립스에서 오류가 난 뒤 커밋을 하려고 한다면
+거부당함(rejected) 
+
+팀장 = 협업할 프로젝트를 하나 만들고 팀원 초대
+
+이클립스 git에서 history로 들어갔을 때 reset의 soft를 쓰면 
+오류 커밋이 사라짐
